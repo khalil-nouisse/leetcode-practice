@@ -1,58 +1,88 @@
+"""
+Product of Array Except Self
+============================
+
+Problem:
+Given an integer array nums, return an array answer such that answer[i] is equal to the product of all the elements of nums except nums[i].
+The algorithm must run in O(n) time and without using the division operation.
+
+Idea:
+Use Prefix and Postfix products.
+1. Create an array `res` initialized to 1s.
+2. First pass (Prefix): For each position `i`, `res[i]` will be the product of all numbers to the left of `i`.
+3. Second pass (Postfix): Maintain a running product from the right (postfix). Multiply `res[i]` by this postfix product to include all numbers to the right of `i`.
+
+Complexity:
+- Time: O(N)
+- Space: O(1) (excluding the output array).
+"""
+
 from typing import List
 
 class Solution:
-    #brute force solution O(n**2) O(n) space for the output array and O(1) extra space
     def productExceptSelf(self, nums: List[int]) -> List[int]:
-        res = [1] * len(nums)
-        for i in range(len(nums)) :
-            for j in range(len(nums)) :
-                if i == j : 
-                    continue
-                else :
-                    res[i] = res[i] * nums[j]
+        """
+        Optimal solution using prefix and suffix products.
+        Time: O(n), Space: O(1) extra space.
+        """
+        n = len(nums) 
+        res = [1] * n
+        
+        # Calculate prefix products
+        prefix = 1
+        for i in range(n):
+            res[i] = prefix
+            prefix *= nums[i]
+            
+        # Calculate postfix products and multiply with prefix
+        postfix = 1
+        for i in range(n - 1, -1, -1):
+            res[i] *= postfix
+            postfix *= nums[i]
+            
         return res
-    
-    #using division O(n) time  ,O(n) space for the output array and O(1) extra space
-    def productExceptSelf1(self, nums: List[int]) -> List[int]:
+
+    def productExceptSelfDivision(self, nums: List[int]) -> List[int]:
+        """
+        Solution using division.
+        Note typically disallowed by the problem statement.
+        """
         prod = 1
-        zero_count = 0  
-        # If 2 or more zeros: → All outputs are 0. , 	
-        #→ All other positions are 0.
-
-        for num in nums :
-            if num : 
+        zero_count = 0 
+        
+        for num in nums:
+            if num:
                 prod *= num
-            else : 
-                zero_count += 1 
-        if zero_count >= 2 : return [0] * len(nums)
-
+            else:
+                zero_count += 1
+                
+        if zero_count >= 2:
+            return [0] * len(nums)
+        
         res = [0] * len(nums)
-        for i , c in enumerate(nums) :
-            # If exactly 1 zero: Only the position of the zero gets the product of non-zero numbers.
-            if zero_count == 1 : 
-                if c == 0 : 
+        for i, c in enumerate(nums):
+            if zero_count == 1:
+                if c == 0:
                     res[i] = prod
-                else : 
+                else:
                     res[i] = 0
-            #•	If no zeros: Each result is prod // nums[i].
-            else : 
-                res[i] = prod//nums[i]
+            else:
+                res[i] = prod // c
         return res
-        #optimal solution using prefix and suffix O(n) time , O(n) space for output array , O(1) extra space
-        def productExceptSelf3(self, nums: List[int]) -> List[int]:
-            n = len(nums) 
-            prefix = 1
-            postfix = 1
-            res = [1] * n
-            for i in range(n) :
-                res[i] *= prefix
-                prefix *= nums[i]
-            for j in range(n - 1 , - 1 , -1) :
-                res[j] *= postfix
-                postfix *= nums[j]
-            return res
-       
 
-sol = Solution()
-nums=[1,2,4,6]
-print(sol.productExceptSelf1(nums))
+    # Brute force solution (O(N^2)) - Time Limit Exceeded for large inputs
+    # def productExceptSelfBruteForce(self, nums: List[int]) -> List[int]:
+    #     res = [1] * len(nums)
+    #     for i in range(len(nums)):
+    #         for j in range(len(nums)):
+    #             if i != j:
+    #                 res[i] *= nums[j]
+    #     return res
+
+
+if __name__ == "__main__":
+    solution = Solution()
+    nums = [1, 2, 3, 4]
+    print(f"Input: {nums}")
+    print(f"Product Except Self (Optimal): {solution.productExceptSelf(nums)}")
+    print(f"Product Except Self (Division): {solution.productExceptSelfDivision(nums)}")

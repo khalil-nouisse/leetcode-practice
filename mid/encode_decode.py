@@ -1,80 +1,82 @@
-""" 
+"""
+Encode and Decode Strings
+=========================
 
-class Solution:
+Problem:
+Design an algorithm to encode a list of strings to a string. The encoded string is then sent over the network and is decoded back to the original list of strings.
 
-    def encode(self, strs: list[str]) -> str:
-        #12#neet#4#code#4#love#4#you
-        if not strs :
-            return ""
+Idea:
+Use length-prefix encoding.
+For each string, encode it as `<length>#<string>`.
+For example, ["neet", "code"] -> "4#neet4#code".
+During decoding, read the integer until '#', then read that many characters as the string.
 
-        res = ""
-        for w in strs : 
-            n = len(w)
-            res +=  str(n) + '#' + w
-        return res 
-            
-    def decode(self, s: str) -> list[str]:
-        if not s :
-            return []
-        res = []
-        i = 0
-        #12#neet#4#code#4#love#4#you
-        #0#
-        while i < len(s) :
-            length = ""
-            word =""
-            if s[i] == "#" :
-                i += 1
-                continue
-            else :
-                while s[i] != "#" :
-                    length += s[i]
-                    i += 1
-                i += 1
-                length = int(length)
-                if length == 0 : 
-                    res.append(word)
-                    continue
-                for j in range(i , i + length) :
-                    word += s[j]
-                res.append(word)
-                i = j + 1
-        return res                
+Complexity:
+- Time: O(N) where N is the total number of characters in the list.
+- Space: O(N) to store the encoded string/result.
 """
 
-# better solution : 
+from typing import List
 
 class Solution:
-
-    def encode(self, strs: list[str]) -> str:
-        if not strs :
+    def encode(self, strs: List[str]) -> str:
+        """
+        Encodes a list of strings to a single string.
+        Format: length#string
+        """
+        if not strs:
             return ""
-        res = ""
-        for w in strs : 
-            n = len(w)
-            res += str(n) + '#' + w
-        return res 
             
-    def decode(self, s: str) -> list[str]:
-        res , i = [] , 0
-        if not s :
+        res = ""
+        for w in strs:
+            # Append length, delimiter, and the word itself
+            res += str(len(w)) + '#' + w
+        return res 
+
+    def decode(self, s: str) -> List[str]:
+        """
+        Decodes a single string to a list of strings.
+        """
+        if not s:
             return []
-        while i < len(s) :
-            j = i 
-            while s[j] != '#' :
+            
+        res = []
+        i = 0
+        
+        while i < len(s):
+            j = i
+            # Find the delimiter '#'
+            while s[j] != '#':
                 j += 1
+            
+            # length of the next word
             length = int(s[i:j])
+            
+            # Valid start of word is after '#'
             j += 1
             word = s[j : j + length]
             res.append(word)
+            
+            # Move pointer to the start of the next encoded segment
             i = j + length
-        return res            
+            
+        return res
 
-a = ["neet" , "code" , "love" , "you"]
-s = ["","code"]
-f = [""]
-sol = Solution()
-print("originale : ", s)
-print("encode : " ,sol.encode(s))
-print("decode : " ,sol.decode(sol.encode(s)))
+if __name__ == "__main__":
+    solution = Solution()
+    
+    test_cases = [
+        ["neet", "code", "love", "you"],
+        ["", "code"],
+        [""],
+        []
+    ]
+    
+    for strs in test_cases:
+        encoded = solution.encode(strs)
+        decoded = solution.decode(encoded)
+        print(f"Original: {strs}")
+        print(f"Encoded:  {encoded}")
+        print(f"Decoded:  {decoded}")
+        print("-" * 20)
 

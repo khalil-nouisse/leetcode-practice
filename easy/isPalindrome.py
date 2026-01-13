@@ -1,32 +1,75 @@
+"""
+Valid Palindrome
+================
+
+Problem:
+A phrase is a palindrome if, after converting all uppercase letters into lowercase letters and removing all non-alphanumeric characters, it reads the same forward and backward.
+Alphanumeric characters include letters and numbers.
+Given a string s, return true if it is a palindrome, or false otherwise.
+
+Idea:
+Two main approaches:
+1. **Reverse String (O(N) Time, O(N) Space)**:
+   - Filter alphanumerics, convert to lowercase, reverse and compare.
+   
+2. **Two Pointers (O(N) Time, O(1) Space)**:
+   - Use two pointers, one at the beginning (l) and one at the end (r).
+   - Move pointers inward, skipping non-alphanumerics.
+   - Compare characters.
+
+Complexity:
+- Time: O(N)
+- Space: O(1) for Two Pointers.
+"""
+
 class Solution:
-    #O(n) space(we stock in a new table) , O(n) time
     def isPalindrome(self, s: str) -> bool:
-        s = s.lower()
-        s = ''.join(ch for ch in s if ch.isalnum())
-        table = []
-        for i in range(len(s) -1 , -1, -1) :
-            table.append(s[i])
-        table = "".join(table)
-        print(table)
-        return table == s
-    #two pointers methode : O(n) tima O(1) space (we dont stock anything !)
-    def isPalindrome1(self, s: str) -> bool:
-        l , r = 0 , len(s) -1
-        while l < r :
-            if not s[l].isalnum() :
-                l+= 1
-            elif not s[r].isalnum() :
-                r += 1
-            elif s[r].upper() == s[l].upper() : 
+        """
+        Validates if a string is a palindrome using Two Pointers (Optimal).
+        Time: O(N), Space: O(1)
+        """
+        l, r = 0, len(s) - 1
+        
+        while l < r:
+            # Move left pointer forward until an alphanumeric char is found
+            while l < r and not self._is_alnum(s[l]):
                 l += 1
+            # Move right pointer backward until an alphanumeric char is found
+            while r > l and not self._is_alnum(s[r]):
                 r -= 1
-            else : 
+                
+            # Compare characters case-insensitively
+            if s[l].lower() != s[r].lower():
                 return False
+            
+            l += 1
+            r -= 1
+            
         return True
 
+    def _is_alnum(self, c: str) -> bool:
+        """
+        Helper to check if a character is alphanumeric.
+        Own implementation or use c.isalnum()
+        """
+        return c.isalnum()
 
-sol = Solution()
+    def isPalindromeReverse(self, s: str) -> bool:
+        """
+        Validates palindrome by creating a reversed filtered string.
+        Time: O(N), Space: O(N)
+        """
+        s = s.lower()
+        # Filter alphanumeric characters
+        filtered_chars = [ch for ch in s if ch.isalnum()]
+        filtered_s = "".join(filtered_chars)
+        
+        # Compare with reversed
+        return filtered_s == filtered_s[::-1]
 
-s = "aaa"
-
-print(sol.isPalindrome1(s))
+if __name__ == "__main__":
+    solution = Solution()
+    s = "A man, a plan, a canal: Panama"
+    print(f"Input: '{s}'")
+    print(f"Is Palindrome (Two Pointers): {solution.isPalindrome(s)}")
+    print(f"Is Palindrome (Reverse): {solution.isPalindromeReverse(s)}")

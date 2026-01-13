@@ -1,86 +1,51 @@
+"""
+Valid Parentheses
+=================
 
-#methode 1
-def isValid(s: str) -> bool:
-    stack = []
-    for i , parenthese in enumerate(s) :
-        if parenthese == "(" or parenthese == "[" or parenthese == "{" :
-            stack.append(parenthese)
-        elif parenthese == ")" or parenthese == "]" or parenthese == "}" :
-            for close in range(i,len(s)):
-                if not stack : break
-                #print(close)
-                #print(parenthese_closer_converted(stack[-1]) == s[close] )
-                #print(stack)
-                if parenthese_closer_converted(stack[-1]) == s[close] : 
-                    stack.pop()
-                else:
-                    return False
-    if not stack : return True
-    else : False
+Problem:
+Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.
+An input string is valid if:
+1. Open brackets must be closed by the same type of brackets.
+2. Open brackets must be closed in the correct order.
 
-def parenthese_closer_converted(parenthese :str ) -> str :
-    match parenthese :
-        case "(": 
-            return ")"
-        case "{":
-            return "}"
-        case "[":
-            return "]"
-        
-print(isValid("]"))
+Idea:
+Use a **Stack**.
+- Iterate through the string.
+- If it's an opening bracket, push it onto the stack.
+- If it's a closing bracket:
+  - Check if the stack is empty (invalid).
+  - Pop the top element and check if it matches the incomplete pair using a mapping.
+- At the end, if the stack is empty, it's valid.
 
+Complexity:
+- Time: O(N)
+- Space: O(N) (worst case all opening brackets)
+"""
 
-#methode 2 :
 class Solution:
     def isValid(self, s: str) -> bool:
-        stack = []
-        for parenthese in s : 
-            if parenthese == "(" or parenthese == "[" or parenthese == "{" :
-                stack.append(parenthese)
-            elif parenthese == ")" or parenthese == "]" or parenthese == "}" :
-                if not stack : return False
-                if self.parenthese_closer_converted(stack[-1]) == parenthese:
-                    stack.pop()
-                else: return False
-            else :return False
-        return not stack
-    def parenthese_closer_converted(self,parenthese :str ) -> str :
-        match parenthese :
-            case "(": 
-                return ")"
-            case "{":
-                return "}"
-            case "[":
-                return "]"
-
-
-solver = Solution()
-
-# 2. Call the method on the instance.
-#print(f"'([)]' is valid: {solver.isValid('([)]')}")
-#print(f"'()[]{{}}' is valid: {solver.isValid('()[]{}')}")
-#print(f"']' is valid: {solver.isValid('(')}")
-
-
-#methode 3 : best 
-class Solution1:
-    def isValid(self, s: str) -> bool:
+        """
+        Validates parentheses using a stack.
+        """
         stack = []
         pairs = {')': '(', ']': '[', '}': '{'}
         
         for c in s:
-            if c in "([{":
-                stack.append(c)
-            elif c in ")]}":
+            # If closing bracket
+            if c in pairs:
+                # If stack is empty or top doesn't match
                 if not stack or stack.pop() != pairs[c]:
                     return False
             else:
-                return False
+                # If opening bracket
+                stack.append(c)
+                
+        # Valid if stack is empty
         return not stack
-    
-solver1 = Solution1()
 
-# 2. Call the method on the instance.
-print(f"'([)]' is valid: {solver1.isValid('([)]')}")
-print(f"'()[]{{}}' is valid: {solver1.isValid('()[]{}')}")
-print(f"']' is valid: {solver1.isValid('(')}")
+if __name__ == "__main__":
+    solution = Solution()
+    test_cases = ["()", "()[]{}", "(]", "([)]"]
+    
+    for s in test_cases:
+        print(f"'{s}' is valid: {solution.isValid(s)}")
