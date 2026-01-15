@@ -67,9 +67,32 @@ class Solution:
         # Compare with reversed
         return filtered_s == filtered_s[::-1]
 
+
+    def isPalindromeTwoPointers(self, s: str) -> bool:
+        l , r = 0 , len(s)-1        
+
+        while l < r : 
+
+            while l < r and s[l].isalnum() == False:
+                l += 1
+            while l < r and s[r].isalnum() == False:
+                r -= 1
+
+            if s[l].lower() == s[r].lower() : 
+                l+= 1
+                r-= 1
+            else : 
+                return False 
+        return True
+
+
+
+
 if __name__ == "__main__":
     solution = Solution()
-    s = "A man, a plan, a canal: Panama"
+    s1 = "A man, a plan, a canal: Panama"
+    s = "tab ?a ?cat"
     print(f"Input: '{s}'")
     print(f"Is Palindrome (Two Pointers): {solution.isPalindrome(s)}")
     print(f"Is Palindrome (Reverse): {solution.isPalindromeReverse(s)}")
+    print(f"Is Palindrome (Reverse): {solution.isPalindromeTwoPointers(s)}")
