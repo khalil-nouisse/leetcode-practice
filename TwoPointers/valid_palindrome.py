@@ -52,7 +52,12 @@ class Solution:
         Helper to check if a character is alphanumeric.
         Own implementation or use c.isalnum()
         """
-        return c.isalnum()
+
+        if (ord('A') <= ord(c) <= ord('Z') or 
+            ord('a') <= ord(c) <= ord('z') or 
+            ord(0) <= ord(c) <= ord(9)) : 
+            return True
+        return False
 
     def isPalindromeReverse(self, s: str) -> bool:
         """
